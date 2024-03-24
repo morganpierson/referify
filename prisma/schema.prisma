@@ -1,0 +1,31 @@
+datasource db {
+  provider          = "postgresql"
+  url               = env("DATABASE_URL")
+  directUrl         = env("DIRECT_URL")
+}
+
+generator client {
+  provider = "prisma-client-js"
+}
+
+model ReferralCode {
+  id        String     @id @default(uuid())
+  createdAt DateTime   @default(now())
+  updatedAt DateTime   @updatedAt
+  company   String
+  code      String
+  details  String?
+  category String?
+  subCategory String?
+  flaggedCount    Int @default(0)
+  author    User?   @relation(fields: [authorId], references: [id])
+  authorId  String
+}
+
+model User {
+  id    String     @id @default(uuid())
+  clerkId String  @unique
+  email String  @unique
+  username  String?
+  codes ReferralCode[]
+}

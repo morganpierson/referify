@@ -4,8 +4,13 @@ import { createClient } from "@/utils/supabase/server";
 import ConnectSupabaseSteps from "@/components/tutorial/ConnectSupabaseSteps";
 import SignUpUserSteps from "@/components/tutorial/SignUpUserSteps";
 import Header from "@/components/Header";
+import { UserButton, auth } from "@clerk/nextjs";
+import { prisma } from "@/utils/db"; 
+import { fetchReferalCodes } from "@/utils/actions";
+import Link from "next/link";
 
 export default async function Index() {
+
   const canInitSupabaseClient = () => {
     // This function is just for the interactive tutorial.
     // Feel free to remove it once you have Supabase connected.
@@ -19,36 +24,58 @@ export default async function Index() {
 
   const isSupabaseConnected = canInitSupabaseClient();
 
+  const referalCodes =  await fetchReferalCodes();
+
+  const { userId } = await auth()
+  console.log('USER ID ', userId)
+  let match
+  let userOrg
+  if (userId) {
+    match = await prisma.user.findUnique({
+      where: {
+        clerkId: userId as string,
+      },
+    })
+    
+  }
+
+  let href = match ? `/codes/create` : '/new-user'
+  console.log("REFERAL CODES ", referalCodes)
   return (
-    <div className="flex-1 w-full flex flex-col gap-20 items-center">
-      <nav className="w-full flex justify-center border-b border-b-foreground/10 h-16">
-        <div className="w-full max-w-4xl flex justify-between items-center p-3 text-sm">
-          <DeployButton />
-          {isSupabaseConnected && <AuthButton />}
-        </div>
-      </nav>
-
-      <div className="animate-in flex-1 flex flex-col gap-20 opacity-0 max-w-4xl px-3">
-        <Header />
-        <main className="flex-1 flex flex-col gap-6">
-          <h2 className="font-bold text-4xl mb-4">Next steps</h2>
-          {isSupabaseConnected ? <SignUpUserSteps /> : <ConnectSupabaseSteps />}
-        </main>
+    <div className="flex-1 w-full flex flex-col gap-20 items-center bg-cyan-100">
+      <div className="flex justify-end w-[80%] mt-6">
+        <UserButton afterSignOutUrl="/" />
       </div>
-
-      <footer className="w-full border-t border-t-foreground/10 p-8 flex justify-center text-center text-xs">
-        <p>
-          Powered by{" "}
-          <a
-            href="https://supabase.com/?utm_source=create-next-app&utm_medium=template&utm_term=nextjs"
-            target="_blank"
-            className="font-bold hover:underline"
-            rel="noreferrer"
-          >
-            Supabase
-          </a>
-        </p>
-      </footer>
+      <div className="border border-gray-500 rounded-md bg-white mx-12 px-4 py-4  min-w-[80%]">
+      
+        <div className="flex justify-between items-center">
+        <p className="font-medium text-xl">Post Codes. Get Paid.</p>
+        
+        <div>
+        <Link href={href}>
+        <button
+        type="button"
+        className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+        >
+        Post a Code
+      </button>
+      </Link>
+      </div>
+      </div>
+      <input
+          type="email"
+          name="email"
+          id="email"
+          className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 min-w-96 px-3 h-12 mt-6"
+          placeholder="Credit card, clothing, sports & outdoors, etc."
+        />
+        {referalCodes.map((code) => (
+        <div>
+          {code.company}
+        </div>
+      ))}
+      </div>
+      
     </div>
   );
 }
