@@ -1,30 +1,27 @@
-import DeployButton from "../components/DeployButton";
-import AuthButton from "../components/AuthButton";
-import { createClient } from "@/utils/supabase/server";
-import ConnectSupabaseSteps from "@/components/tutorial/ConnectSupabaseSteps";
-import SignUpUserSteps from "@/components/tutorial/SignUpUserSteps";
-import Header from "@/components/Header";
-import { UserButton, auth } from "@clerk/nextjs";
-import { prisma } from "@/utils/db"; 
-import { fetchReferalCodes } from "@/utils/actions";
-import Link from "next/link";
+import DeployButton from '../components/DeployButton'
+import AuthButton from '../components/AuthButton'
+import { createClient } from '@/utils/supabase/server'
+import Header from '@/components/Header'
+import { UserButton, auth } from '@clerk/nextjs'
+import { prisma } from '@/utils/db'
+import { fetchReferalCodes } from '@/utils/actions'
+import Link from 'next/link'
 
 export default async function Index() {
-
   const canInitSupabaseClient = () => {
     // This function is just for the interactive tutorial.
     // Feel free to remove it once you have Supabase connected.
     try {
-      createClient();
-      return true;
+      createClient()
+      return true
     } catch (e) {
-      return false;
+      return false
     }
-  };
+  }
 
-  const isSupabaseConnected = canInitSupabaseClient();
+  const isSupabaseConnected = canInitSupabaseClient()
 
-  const referalCodes =  await fetchReferalCodes();
+  const referalCodes = await fetchReferalCodes()
 
   const { userId } = await auth()
   console.log('USER ID ', userId)
@@ -36,33 +33,31 @@ export default async function Index() {
         clerkId: userId as string,
       },
     })
-    
   }
 
   let href = match ? `/codes/create` : '/new-user'
-  console.log("REFERAL CODES ", referalCodes)
+  console.log('REFERAL CODES ', referalCodes)
   return (
-    <div className="flex-1 w-full flex flex-col gap-20 items-center bg-cyan-100">
+    <div className="flex-1 w-full flex flex-col gap-20 items-center bg-cyan-400">
       <div className="flex justify-end w-[80%] mt-6">
         <UserButton afterSignOutUrl="/" />
       </div>
-      <div className="border border-gray-500 rounded-md bg-white mx-12 px-4 py-4  min-w-[80%]">
-      
+      <div className="border border-gray-500 rounded-md bg-white mx-12 px-4 py-4  min-w-[80%] shadow-lg shadow-cyan-600">
         <div className="flex justify-between items-center">
-        <p className="font-medium text-xl">Post Codes. Get Paid.</p>
-        
-        <div>
-        <Link href={href}>
-        <button
-        type="button"
-        className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
-        >
-        Post a Code
-      </button>
-      </Link>
-      </div>
-      </div>
-      <input
+          <p className="font-medium text-xl">Post Codes. Get Paid.</p>
+
+          <div>
+            <Link href={href}>
+              <button
+                type="button"
+                className="rounded-md bg-indigo-600 px-3.5 py-2.5 text-sm font-semibold text-white shadow-sm hover:bg-indigo-500 focus-visible:outline focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-indigo-600"
+              >
+                Post a Code
+              </button>
+            </Link>
+          </div>
+        </div>
+        <input
           type="email"
           name="email"
           id="email"
@@ -70,12 +65,9 @@ export default async function Index() {
           placeholder="Credit card, clothing, sports & outdoors, etc."
         />
         {referalCodes.map((code) => (
-        <div>
-          {code.company}
-        </div>
-      ))}
+          <div>{code.company}</div>
+        ))}
       </div>
-      
     </div>
-  );
+  )
 }
