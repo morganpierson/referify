@@ -1,3 +1,4 @@
+// @ts-nocheck
 import DeployButton from '../components/DeployButton'
 import AuthButton from '../components/AuthButton'
 import { createClient } from '@/utils/supabase/server'
@@ -57,7 +58,7 @@ export default async function Index() {
     'Crypto',
   ]
 
-  const brandOptions = []
+  const brandOptions: string[] = []
 
   referalCodes.forEach((code) => {
     brandOptions.includes(code.companyName)

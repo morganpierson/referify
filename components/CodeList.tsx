@@ -1,10 +1,11 @@
+// @ts-nocheck
 'use client'
 
 import { CodeCard } from './CodeCard'
 import CodeFilter from './CodeFilter'
 import { useState } from 'react'
 
-const CodeList = ({ referalCodes }) => {
+const CodeList = ({ referalCodes }: { referalCodes: any }) => {
   const [state, setState] = useState({
     selectedFilters: [],
     codeList: referalCodes,

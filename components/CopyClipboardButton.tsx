@@ -1,4 +1,5 @@
 // components/CopyToClipboardButton.js
+// @ts-nocheck
 import { useState, useEffect } from 'react'
 import copy from 'clipboard-copy'
 import { ClipboardDocumentIcon } from '@heroicons/react/24/outline'

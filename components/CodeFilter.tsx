@@ -16,6 +16,7 @@ export default function CodeFilter({
   categoryFilters: any
   handleFilterSelect: any
   applyFilters: any
+  brandOptions: any
 }) {
   // const [selectedFilters, setSelectedFilters] = useState([])
   // const [prevState, formAction] = useFormState<typeof prevState, FormData>(
@@ -57,7 +58,7 @@ export default function CodeFilter({
                 <div className="space-y-2 pt-2 sm:space-y-4 sm:pt-4 grid grid-cols-1 overflow-auto sm:max-h-52">
                   <span className="font-semibold text-md">Category</span>
 
-                  {categoryFilters.map((option, optionIdx) => (
+                  {categoryFilters.map((option: any, optionIdx: number) => (
                     <div
                       key={option.value}
                       className="flex items-center text-base sm:text-sm"
@@ -84,7 +85,7 @@ export default function CodeFilter({
               <fieldset>
                 <div className="space-y-2 pt-2 sm:space-y-4 sm:pt-4 grid grid-cols-1 sm:max-h-64 overflow-scroll">
                   <span className="font-semibold text-md">Brand</span>
-                  {brandOptions.map((option, optionIdx) => (
+                  {brandOptions.map((option: any, optionIdx: number) => (
                     <div
                       key={option.value}
                       className="flex items-center text-base sm:text-sm"

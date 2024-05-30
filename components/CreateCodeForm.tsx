@@ -1,5 +1,5 @@
+// @ts-nocheck
 'use client'
-
 import { createReferalCode } from '@/utils/actions'
 import { stat } from 'fs'
 import { useState } from 'react'

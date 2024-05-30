@@ -1,8 +1,6 @@
 'use server'
 import { redirect } from 'next/navigation'
 import { prisma } from './db'
-import { getUserByClerkID } from './auth'
-import { revalidatePath } from 'next/cache'
 
 export const fetchReferalCodes = async () => {
   const referalCodes = await prisma.referralCode.findMany({})
