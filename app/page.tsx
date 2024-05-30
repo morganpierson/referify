@@ -4,8 +4,10 @@ import { createClient } from '@/utils/supabase/server'
 import Header from '@/components/Header'
 import { UserButton, auth } from '@clerk/nextjs'
 import { prisma } from '@/utils/db'
-import { fetchReferalCodes } from '@/utils/actions'
+import { fetchReferalCodes, filterReferalCodes } from '@/utils/actions'
 import Link from 'next/link'
+import { CodeCard } from '@/components/CodeCard'
+import CodeFilter from '@/components/CodeFilter'
 
 export default async function Index() {
   const canInitSupabaseClient = () => {
@@ -23,8 +25,9 @@ export default async function Index() {
 
   const referalCodes = await fetchReferalCodes()
 
+  console.log('REFERAL CODES ', referalCodes)
+
   const { userId } = await auth()
-  console.log('USER ID ', userId)
   let match
   let userOrg
   if (userId) {
@@ -35,17 +38,46 @@ export default async function Index() {
     })
   }
 
+  const categoryOptions = [
+    'Credit Cards',
+    'Fashion',
+    'Travel',
+    'Gaming',
+    'Home & Garden',
+    'Health & Fitness',
+    'Food & Drink',
+    'Entertainment',
+    'Automotive',
+    'Other',
+    'Business',
+    'Gifts',
+    'Pets',
+    'Kids',
+    'Insurance',
+    'Crypto',
+  ]
+
+  const brandOptions = []
+
+  referalCodes.forEach((code) => {
+    brandOptions.includes(code.companyName)
+      ? null
+      : brandOptions.push(code.companyName)
+  })
+
   let href = match ? `/codes/create` : '/new-user'
-  console.log('REFERAL CODES ', referalCodes)
   return (
     <div className="flex-1 w-full flex flex-col gap-20 items-center bg-cyan-400">
-      <div className="flex justify-end w-[80%] mt-6">
-        <UserButton afterSignOutUrl="/" />
-      </div>
-      <div className="border border-gray-500 rounded-md bg-white mx-12 px-4 py-4  min-w-[80%] shadow-lg shadow-cyan-600">
+      <div className="border border-gray-500 rounded-md bg-white mt-16 mx-12 px-4 py-4  min-w-[70%] shadow-lg shadow-cyan-600">
         <div className="flex justify-between items-center">
-          <p className="font-medium text-xl">Post Codes. Get Paid.</p>
-
+          <div>
+            <p className="font-medium text-xl text-black">
+              Share and discover referal codes
+            </p>
+            <p className="text-gray-500 font-light">
+              Unlock discounts, cash back, rewards, and more.
+            </p>
+          </div>
           <div>
             <Link href={href}>
               <button
@@ -57,15 +89,15 @@ export default async function Index() {
             </Link>
           </div>
         </div>
-        <input
-          type="email"
-          name="email"
-          id="email"
-          className="rounded-md border-0 py-1.5 text-gray-900 shadow-sm ring-1 ring-inset ring-gray-300 placeholder:text-gray-400 focus:ring-2 focus:ring-inset focus:ring-indigo-600 sm:text-sm sm:leading-6 min-w-96 px-3 h-12 mt-6"
-          placeholder="Credit card, clothing, sports & outdoors, etc."
+
+        <CodeFilter
+          categoryFilters={categoryOptions}
+          brandOptions={brandOptions}
+          Select={filterReferalCodes}
         />
+
         {referalCodes.map((code) => (
-          <div>{code.company}</div>
+          <CodeCard key={code.id} code={code} />
         ))}
       </div>
     </div>

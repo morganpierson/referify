@@ -12,7 +12,9 @@ model ReferralCode {
   id        String     @id @default(uuid())
   createdAt DateTime   @default(now())
   updatedAt DateTime   @updatedAt
-  company   String
+  companyName   String
+  companyUrl    String
+  companyLogo      String
   code      String
   details  String?
   category String?

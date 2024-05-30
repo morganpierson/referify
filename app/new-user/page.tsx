@@ -15,11 +15,11 @@ const createNewUser = async () => {
       data: {
         clerkId: user.id,
         email: user?.emailAddresses[0].emailAddress,
-        
       },
     })
-    redirect(`/codes/create`)
-}}
+  }
+  redirect(`/codes/create`)
+}
 
 const NewUser = async () => {
   await createNewUser()
